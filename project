@@ -137,11 +137,11 @@ fig, ax = plt.subplots()
 
 sun, = plt.plot([], [], 'o', color='y')
 
-earth, = plt.plot([], [], 'o', color='orange')
+earth, = plt.plot([], [], 'o', color='green')
 
-jupiter, = plt.plot([], [], 'o', color='r')
+jupiter, = plt.plot([], [], 'o', color='orange')
 
-pluto, = plt.plot([], [], 'o', color='r')
+pluto, = plt.plot([], [], 'o', color='blue')
 
 sat, = plt.plot([], [], 'o', color='r')
 
