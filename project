@@ -61,20 +61,31 @@ def move_func(s, t):
 
 ae = 149 * 10**9
 
-x_sun = 0
-v_x_sun = 0
-y_sun = 0
-v_y_sun = 8638
+x_sun0 = 0
+v_x_sun0 = 0
+y_sun0 = 0
+v_y_sun0 = 0
 
-x20 = - 12.3 * ae
-v_x20 = 0
-y20 = 0
-v_y20 = - 6000
+x_earth0 = 1 * ae
+v_x_earth0 = 0
+y_earth0 = 0
+v_y_earth0 = 29780
 
-x30 = 0
-v_x30 = 4000
-y30 = 12.3 * ae
-v_y30 = 0
+x_jupiter0 = 5.20 * ae
+v_x_jupiter0 = 4000
+y_jupiter0 = 0
+v_y_jupiter0 = 13060
+
+x_pluto0 = 39.5 * ae
+v_x_pluto0 = 0
+y_pluto = 0
+v_y_pluto = 4700
+
+x_sat0 = 1 * ae
+v_x_sat0 = 0
+y_sat0 = 0
+v_y_sat0 = 1000
+
 
 s0 = (x10, v_x10, y10, v_y10,
       x20, v_x20, y20, v_y20,
