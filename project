@@ -24,25 +24,22 @@ def move_func(s, t):
   dxdt_sun = v_x_sun
   dv_xdt_sun = 0
 
-  dydt_sun = v_y_sun
-  dv_ydt_sun = 0
-
   dxdt_earth = v_x_earth
   dv_xdt_earth = (- G * m_sun * (x_earth - x_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
 
-  dy_dt_earth = v_y_earth
+  dydt_earth = v_y_earth
   dv_ydt_earth = (- G * m_sun * (y_earth - y_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
 
   dxdt_jupiter = v_x_jupiter
   dv_xdt_jupiter = (- G * m_sun * (x_jupiter - x_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
 
-  dy_dt_jupiter = v_y_jupiter
+  dydt_jupiter = v_y_jupiter
   dv_ydt_jupiter = (- G * m_sun * (y_jupiter - y_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
 
   dxdt_pluto = v_x_pluto
   dv_xdt_pluto = (- G * m_sun * (x_pluto - x_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)
 
-  dy_dt_pluto = v_y_pluto
+  dydt_pluto = v_y_pluto
   dv_ydt_pluto = (- G * m_sun * (y_pluto - y_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)
 
   dxdt_sat = v_x_sat
