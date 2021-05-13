@@ -13,19 +13,12 @@ t = np.linspace(0, years*seconds_in_year, frames)
 # Определяем функцию для системы диф. уравнений
 
 def move_func(s, t):
-  (x_sun, v_x_sun, y_sun, v_y_sun,
-   x_earth, v_x_earth, y_earth, v_y_earth,
+  (x_earth, v_x_earth, y_earth, v_y_earth,
    x_jupiter, v_x_jupiter, y_jupiter, v_y_jupiter,
    x_pluto, v_x_pluto, y_pluto, v_y_pluto,
    x_sat, v_x_sat, y_sat, v_y_sat) = s
 
 # Диманика первого тела под влиянием второго и третьего
-
-  dxdt_sun = v_x_sun
-  dv_xdt_sun = 0
-  
-  dydt_sun = v_y_sun
-  dv_ydt_sun = 0
 
   dxdt_earth = v_x_earth
   dv_xdt_earth = (- G * m_sun * (x_earth - x_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
@@ -57,20 +50,18 @@ def move_func(s, t):
             - G * m_jupiter * (y_sat - y_jupiter) / ((y_sat - y_jupiter)**2 + (x_sat - x_jupiter)**2)**1.5
             - G * m_pluto * (y_sat - y_pluto) / ((y_sat - y_pluto)**2 + (x_sat - x_pluto)**2)**1.5)
 
-  return (dxdt_sun, dv_xdt_sun, dydt_sun, dv_ydt_sun,
-          dxdt_earth, dv_xdt_earth, dydt_earth, dv_ydt_earth,
+  return (dxdt_earth, dv_xdt_earth, dydt_earth, dv_ydt_earth,
           dxdt_jupiter, dv_xdt_jupiter, dydt_jupiter, dv_ydt_jupiter,
           dxdt_pluto, dv_xdt_pluto, dydt_pluto, dv_ydt_pluto,
           dxdt_sat, dv_xdt_sat, dydt_sat, dv_ydt_sat)
- 
 # Определяем начальные значения и параметры, входящие в систему диф. уравнений
 
 ae = 149 * 10**9
 
-x_sun0 = 0
-v_x_sun0 = 0
-y_sun0 = 0
-v_y_sun0 = 0
+x_sun = 0
+v_x_sun = 0
+y_sun = 0
+v_y_sun = 0
 
 x_earth0 = 1 * ae
 v_x_earth0 = 0
@@ -92,7 +83,7 @@ v_x_sat0 = 0
 y_sat0 = 0
 v_y_sat0 = 1000
 
-s0 = (x_sun0, v_x_sun0, y_sun0, v_y_sun0,
+s0 = (x_sun, v_x_sun, y_sun, v_y_sun,
       x_earth0, v_x_earth0, y_earth0, v_y_earth0,
       x_jupiter0, v_x_jupiter0, y_jupiter0, v_y_jupiter0,
       x_pluto0, v_x_pluto0, y_pluto0, v_y_pluto0,
@@ -117,25 +108,29 @@ sol = odeint(move_func, s0, t)
 def solve_func(i, key):
     sol = odeint(move_func, s0, t)
     if key == 'point':
-        x1 = sol[i, 0]
-        y1 = sol[i, 2]
-        x2 = sol[i, 4]
-        y2 = sol[i, 6]
-        x3 = sol[i, 8]
-        y3 = sol[i, 10]
+        x_earth = sol[i, 0]
+        y_earth = sol[i, 2]
+        x_jupiter = sol[i, 4]
+        y_jupiter = sol[i, 6]
+        x_pluto = sol[i, 8]
+        y_pluto = sol[i, 10]
+        x_sat = sol[i, 12]
+        y_sat = sol[i, 14]
     else:
-        x1 = sol[:i, 0]
-        y1 = sol[:i, 2]
-        x2 = sol[:i, 4]
-        y2 = sol[:i, 6]
-        x3 = sol[:i, 8]
-        y3 = sol[:i, 10]
-    return ((x1, y1), (x2, y2), (x3, y3))
+        x_earth = sol[:i, 0]
+        y_earth = sol[:i, 2]
+        x_jupiter = sol[:i, 4]
+        y_jupiter = sol[:i, 6]
+        x_pluto = sol[:i, 8]
+        y_pluto = sol[:i, 10]
+        x_sat = sol[:i, 12]
+        y_sat = sol[:i, 14]
+    return ((x_earth, y_earth), (x_jupiter, y_jupiter), (x_pluto, y_pluto),  (x_sat, y_sat))
 
 # Строим решение в виде графика и анимируем
 fig, ax = plt.subplots()
 
-sun, = plt.plot([], [], 'o', color='y')
+sun, = plt.plot([], [], 'o', color='y', ms=25)
 
 earth, = plt.plot([], [], 'o', color='green')
 
