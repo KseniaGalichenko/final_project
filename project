@@ -21,6 +21,12 @@ def move_func(s, t):
 
 # Диманика первого тела под влиянием второго и третьего
 
+  dxdt_sun = v_x_sun
+  dv_xdt_sun = 0
+
+  dydt_sun = v_y_sun
+  dv_ydt_sun = 0
+
   dxdt_earth = v_x_earth
   dv_xdt_earth = (- G * m_sun * (x_earth - x_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
 
