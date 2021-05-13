@@ -1,1 +1,136 @@
-rfhbyf
+import numpy as np
+from scipy.integrate import odeint
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
+
+# Определяем переменную величину
+
+frames = 365
+seconds_in_year = 365 * 24 * 60 * 60
+years = 20
+t = np.linspace(0, years*seconds_in_year, frames)
+
+# Определяем функцию для системы диф. уравнений
+
+def move_func(s, t):
+  (x_sun, v_x_sun, y_sun, v_y_sun,
+   x_earth, v_x_earth, y_earth, v_y_earth,
+   x_jupiter, v_x_jupiter, y_jupiter, v_y_jupiter,
+   x_pluto, v_x_pluto, y_pluto, v_y_pluto
+   x_sat, v_x_sat, y_sat, v_y_sat) = s
+
+# Диманика первого тела под влиянием второго и третьего
+
+  dxdt_earth = v_x_earth
+  dv_xdt_earth = (- G * m_sun * (x_earth - x_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
+
+  dy_dt_earth = v_y_earth
+  dv_ydt_earth = (- G * m_sun * (y_earth - y_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
+
+  dxdt_jupiter = v_x_jupiter
+  dv_xdt_jupiter = (- G * m_sun * (x_jupiter - x_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
+
+  dy_dt_jupiter = v_y_jupiter
+  dv_ydt_jupiter = (- G * m_sun * (y_jupiter - y_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
+
+  dxdt_pluto = v_x_pluto
+  dv_xdt_pluto = (- G * m_sun * (x_pluto - x_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)**1.5)
+
+  dy_dt_pluto = v_y_pluto
+  dv_ydt_pluto = (- G * m_sun * (y_pluto - y_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)**1.5)
+
+  return (x_sun, v_x_sun, y_sun, v_y_sun,
+          x_earth, v_x_earth, y_earth, v_y_earth,
+          x_jupiter, v_x_jupiter, y_jupiter, v_y_jupiter,
+          x_pluto, v_x_pluto, y_pluto, v_y_pluto
+          x_sat, v_x_sat, y_sat, v_y_sat)
+ 
+# Определяем начальные значения и параметры, входящие в систему диф. уравнений
+
+ae = 149 * 10**9
+
+x_sun = 0
+v_x_sun = 0
+y_sun = 0
+v_y_sun = 8638
+
+x20 = - 12.3 * ae
+v_x20 = 0
+y20 = 0
+v_y20 = - 6000
+
+x30 = 0
+v_x30 = 4000
+y30 = 12.3 * ae
+v_y30 = 0
+
+s0 = (x10, v_x10, y10, v_y10,
+      x20, v_x20, y20, v_y20,
+      x30, v_x30, y30, v_y30)
+
+M = 1.98847 * 10**30
+m1 = 1.06 * M
+
+m2 = 0.96 * M
+
+m3 = 0.67 * M
+
+G = 6.67 * 10**(-11)
+
+# Решаем систему диф. уравнений
+
+sol = odeint(move_func, s0, t)
+
+def solve_func(i, key):
+    sol = odeint(move_func, s0, t)
+    if key == 'point':
+        x1 = sol[i, 0]
+        y1 = sol[i, 2]
+        x2 = sol[i, 4]
+        y2 = sol[i, 6]
+        x3 = sol[i, 8]
+        y3 = sol[i, 10]
+    else:
+        x1 = sol[:i, 0]
+        y1 = sol[:i, 2]
+        x2 = sol[:i, 4]
+        y2 = sol[:i, 6]
+        x3 = sol[:i, 8]
+        y3 = sol[:i, 10]
+    return ((x1, y1), (x2, y2), (x3, y3))
+
+# Строим решение в виде графика и анимируем
+fig, ax = plt.subplots()
+
+ball1, = plt.plot([], [], 'o', color='y')
+ball_line1, = plt.plot([], [], '-', color='y')
+
+ball2, = plt.plot([], [], 'o', color='orange')
+ball_line2, = plt.plot([], [], '-', color='orange')
+
+ball3, = plt.plot([], [], 'o', color='r')
+ball_line3, = plt.plot([], [], '-', color='r')
+
+
+def animate(i):
+    ball1.set_data(solve_func(i, 'point')[0])
+    ball_line1.set_data(solve_func(i, 'line')[0])
+
+    ball2.set_data(solve_func(i, 'point')[1])
+    ball_line2.set_data(solve_func(i, 'line')[1])
+
+    ball3.set_data(solve_func(i, 'point')[2])
+    ball_line3.set_data(solve_func(i, 'line')[2])
+
+ani = FuncAnimation(fig,
+                    animate,
+                    frames=frames,
+                    interval=30)
+
+plt.axis('equal')
+edge = 20*ae
+ax.set_xlim(-edge, edge)
+ax.set_ylim(-edge, edge)
+
+# ani.save('task1.gif')
+plt.show()
