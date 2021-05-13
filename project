@@ -57,7 +57,7 @@ def move_func(s, t):
             - G * m_jupiter * (y_sat - y_jupiter) / ((y_sat - y_jupiter)**2 + (x_sat - x_jupiter)**2)**1.5
             - G * m_pluto * (y_sat - y_pluto) / ((y_sat - y_pluto)**2 + (x_sat - x_pluto)**2)**1.5)
 
-  return (dxdt_sun, dv_xdt_sun, dydt_sun, v_ydt_sun,
+  return (dxdt_sun, dv_xdt_sun, dydt_sun, dv_ydt_sun,
           dxdt_earth, dv_xdt_earth, dydt_earth, dv_ydt_earth,
           dxdt_jupiter, dv_xdt_jupiter, dydt_jupiter, dv_ydt_jupiter,
           dxdt_pluto, dv_xdt_pluto, dydt_pluto, dv_ydt_pluto,
