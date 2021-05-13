@@ -51,11 +51,11 @@ def move_func(s, t):
             - G * m_jupiter * (y_sat - y_jupiter) / ((y_sat - y_jupiter)**2 + (x_sat - x_jupiter)**2)**1.5
             - G * m_pluto * (y_sat - y_pluto) / ((y_sat - y_pluto)**2 + (x_sat - x_pluto)**2)**1.5)
 
-  return (x_sun, v_x_sun, y_sun, v_y_sun,
-          x_earth, v_x_earth, y_earth, v_y_earth,
-          x_jupiter, v_x_jupiter, y_jupiter, v_y_jupiter,
-          x_pluto, v_x_pluto, y_pluto, v_y_pluto,
-          x_sat, v_x_sat, y_sat, v_y_sat)
+  return (dxdt_sun, dv_xdt_sun, dydt_sun, v_ydt_sun,
+          dxdt_earth, dv_xdt_earth, dydt_earth, dv_ydt_earth,
+          dxdt_jupiter, dv_xdt_jupiter, dydt_jupiter, dv_ydt_jupiter,
+          dxdt_pluto, dv_xdt_pluto, dydt_pluto, dv_ydt_pluto,
+          dxdt_sat, dv_xdt_sat, dydt_sat, dv_ydt_sat)
  
 # Определяем начальные значения и параметры, входящие в систему диф. уравнений
 
