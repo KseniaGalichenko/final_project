@@ -140,8 +140,8 @@ def solve_func(i, key):
 # Строим решение в виде графика и анимируем
 fig, ax = plt.subplots()
 
-ball1, = plt.plot([], [], 'o', color='y')
-# ball_line1, = plt.plot([], [], '-', color='y')
+ball1, = plt.plot([], [], 'o', color='gold')
+# ball_line1, = plt.plot([], [], '-', color='gold')
 
 ball2, = plt.plot([], [], 'o', color='green')
 # ball_line2, = plt.plot([], [], '-', color='orange')
