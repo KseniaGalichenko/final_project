@@ -3,153 +3,178 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
+# Определяем переменную величину
+
 frames = 365
 seconds_in_year = 365 * 24 * 60 * 60
-years = 20
+years = 1
 t = np.linspace(0, years*seconds_in_year, frames)
 
+# 1 - Sun, 2 - Earth, 3 - Jupiter, 4 - Uran, 5 - Sat
+
+# Определяем функцию для системы диф. уравнений
+
 def move_func(s, t):
-  (x_earth, v_x_earth, y_earth, v_y_earth,
-   x_jupiter, v_x_jupiter, y_jupiter, v_y_jupiter,
-   x_pluto, v_x_pluto, y_pluto, v_y_pluto,
-   x_sat, v_x_sat, y_sat, v_y_sat) = s
+  (x1, v_x1, y1, v_y1,
+   x2, v_x2, y2, v_y2,
+   x3, v_x3, y3, v_y3,
+   x4, v_x4, y4, v_y4,
+   x5, v_x5, y5, v_y5) = s
 
-  dxdt_earth = v_x_earth
-  dv_xdt_earth = (- G * m_sun * (x_earth - x_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
+# Диманика первого тела под влиянием второго и третьего
 
-  dydt_earth = v_y_earth
-  dv_ydt_earth = (- G * m_sun * (y_earth - y_sun) / ((y_earth - y_sun)**2 + (x_earth - x_sun)**2)**1.5)
+  dxdt1 = v_x1
+  dv_xdt1 = (- G * m2 * (x1 - x2) / ((x1 - x2)**2 + (y1 - y2)**2)**1.5 - G * m3 * (x1 - x3) / ((x1 - x3)**2 + (y1 - y3)**2)**1.5)
 
-  dxdt_jupiter = v_x_jupiter
-  dv_xdt_jupiter = (- G * m_sun * (x_jupiter - x_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
+  dy_dt1 = v_y1
+  dv_ydt1 = (- G * m2 * (y1 - y2) / ((x1 - x2)**2 + (y1 - y2)**2)**1.5 - G * m3 * (y1 - y3) / ((x1 - x3)**2 + (y1 - y3)**2)**1.5)
 
-  dydt_jupiter = v_y_jupiter
-  dv_ydt_jupiter = (- G * m_sun * (y_jupiter - y_sun) / ((y_jupiter - y_sun)**2 + (x_jupiter - x_sun)**2)**1.5)
+  dxdt2 = v_x2
+  dv_xdt2 = (- G * m1 * (x2 - x1) / ((x2 - x1)**2 + (y2 - y1)**2)**1.5 - G * m3 * (x2 - x3) / ((x2 - x3)**2 + (y2 - y3)**2)**1.5)
 
-  dxdt_pluto = v_x_pluto
-  dv_xdt_pluto = (- G * m_sun * (x_pluto - x_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)
+  dy_dt2 = v_y2
+  dv_ydt2 = (- G * m1 * (y2 - y1) / ((x2 - x1)**2 + (y2 - y1)**2)**1.5 - G * m3 * (y2 - y3) / ((x2 - x3)**2 + (y2 - y3)**2)**1.5)
 
-  dydt_pluto = v_y_pluto
-  dv_ydt_pluto = (- G * m_sun * (y_pluto - y_sun) / ((y_pluto - y_sun)**2 + (x_pluto - x_sun)**2)**1.5)
+  dxdt3 = v_x3
+  dv_xdt3 = (- G * m1 * (x3 - x1) / ((x3 - x1)**2 + (y3 - y1)**2)**1.5 - G * m2 * (x3 - x2) / ((x3 - x2)**2 + (y3 - y2)**2)**1.5)
 
-  dxdt_sat = v_x_sat
-  dv_xdt_sat = (- G * m_sun * (x_sat - x_sun) / ((x_sat - x_sun)**2 + (y_sat - y_sun)**2)**1.5
-            - G * m_earth * (x_sat - x_earth) / ((x_sat - x_earth)**2 + (y_sat - y_earth)**2)**1.5 
-            - G * m_jupiter * (x_sat - x_jupiter) / ((x_sat - x_jupiter)**2 + (y_sat - y_jupiter)**2)**1.5
-            - G * m_pluto * (x_sat - x_pluto) / ((x_sat - x_pluto)**2 + (y_sat - y_pluto)**2)**1.5)
+  dy_dt3 = v_y3
+  dv_ydt3 = (- G * m1 * (y3 - y1) / ((x3 - x1)**2 + (y3 - y1)**2)**1.5 - G * m2 * (y3 - y2) / ((x3 - x2)**2 + (y3 - y2)**2)**1.5)
 
-  dydt_sat = v_y_sat
-  dv_ydt_sat = (- G * m_sun * (y_sat - y_sun) / ((y_sat - y_sun)**2 + (x_sat - x_sun)**2)**1.5
-            - G * m_earth * (y_sat - y_earth) / ((y_sat - y_earth)**2 + (x_sat - x_earth)**2)**1.5 
-            - G * m_jupiter * (y_sat - y_jupiter) / ((y_sat - y_jupiter)**2 + (x_sat - x_jupiter)**2)**1.5
-            - G * m_pluto * (y_sat - y_pluto) / ((y_sat - y_pluto)**2 + (x_sat - x_pluto)**2)**1.5)
-            
-  return (dxdt_earth, dv_xdt_earth, dydt_earth, dv_ydt_earth,
-          dxdt_jupiter, dv_xdt_jupiter, dydt_jupiter, dv_ydt_jupiter,
-          dxdt_pluto, dv_xdt_pluto, dydt_pluto, dv_ydt_pluto,
-          dxdt_sat, dv_xdt_sat, dydt_sat, dv_ydt_sat)
+  dxdt4 = v_x4
+  dv_xdt4 = (- G * m1 * (x4 - x1) / ((x4 - x1)**2 + (y4 - y1)**2)**1.5)
 
+  dy_dt4 = v_y4
+  dv_ydt4 = (- G * m1 * (y4 - y1) / ((x4 - x1)**2 + (y4 - y1)**2)**1.5)
+
+  dxdt5 = v_x5
+  dv_xdt5 = (- G * m1 * (x5 - x1) / ((x5 - x1)**2 + (y5 - y1)**2)**1.5 - G * m2 * (x5 - x2) / ((x5 - x2)**2 + (y5 - y2)**2)**1.5 - G * m3 * (x5 - x3) / ((x5 - x3)**2 + (y5 - y3)**2)**1.5 - G * m4 * (x5 - x4) / ((x5 - x4)**2 + (y5 - y4)**2)**1.5)
+
+  dy_dt5 = v_y5
+  dv_ydt5 = (- G * m1 * (y5 - y1) / ((x5 - x1)**2 + (y5 - y1)**2)**1.5 - G * m2 * (y5 - y2) / ((x5 - x2)**2 + (y5 - y2)**2)**1.5 - G * m3 * (y5 - y3) / ((x5 - x3)**2 + (y5 - y3)**2)**1.5 - G * m4 * (y5 - y4) / ((x5 - x4)**2 + (y5 - y4)**2)**1.5)
+
+  return (dxdt1, dv_xdt1, dy_dt1, dv_ydt1,
+          dxdt2, dv_xdt2, dy_dt2, dv_ydt2,
+          dxdt3, dv_xdt3, dy_dt3, dv_ydt3,
+          dxdt4, dv_xdt4, dy_dt4, dv_ydt4,
+          dxdt5, dv_xdt5, dy_dt5, dv_ydt5)
+
+# Определяем начальные значения и параметры, входящие в систему диф. уравнений
 
 ae = 149 * 10**9
 
-x_sun = 0
-v_x_sun = 0
-y_sun = 0
-v_y_sun = 0
+x10 = 0
+v_x10 = 0
+y10 = 0
+v_y10 = 0
 
-x_earth0 = 1 * ae
-v_x_earth0 = 0
-y_earth0 = 0
-v_y_earth0 = 29780
+x20 = 1 * ae
+v_x20 = 0
+y20 = 0
+v_y20 = 30000
 
-x_jupiter0 = 5.20 * ae
-v_x_jupiter0 = 4000
-y_jupiter0 = 0
-v_y_jupiter0 = 13060
+x30 = 5.2 * ae
+v_x30 = 0
+y30 = 0
+v_y30 = 13060
 
-x_pluto0 = 39.5 * ae
-v_x_pluto0 = 0
-y_pluto0 = 0
-v_y_pluto0 = 4700
+x40 = 19 * ae
+v_x40 = 0
+y40 = 0
+v_y40 = 7000
 
-x_sat0 = 1 * ae
-v_x_sat0 = 0
-y_sat0 = 0
-v_y_sat0 = 1000
+x50 = 1.1 * ae
+v_x50 = 0
+y50 = 0
+v_y50 = 2000
 
-s0 = (x_sun, v_x_sun, y_sun, v_y_sun,
-      x_earth0, v_x_earth0, y_earth0, v_y_earth0,
-      x_jupiter0, v_x_jupiter0, y_jupiter0, v_y_jupiter0,
-      x_pluto0, v_x_pluto0, y_pluto0, v_y_pluto0,
-      x_sat0, v_x_sat0, y_sat0, v_y_sat0)
+s0 = (x10, v_x10, y10, v_y10,
+      x20, v_x20, y20, v_y20,
+      x30, v_x30, y30, v_y30,
+      x40, v_x40, y40, v_y40,
+      x50, v_x50, y50, v_y50)
 
-m_sun = 1.98847 * 10**30
+M = 1.98847 * 10**30
+m1 = M
 
-m_earth = 3003 * 10**(-9) * m_sun
+m2 = 3003 * 10 **(-9) * M
 
-m_jupiter = 954588 * 10**(-9) * m_sun
+m3 = 954588 * 10 ** (-9) * M
 
-m_pluto = 1.303 * 10**22
+m4 = 14.54 * M
 
-m_sat = 10**(-15) * m_sun
+m5 = 500
 
 G = 6.67 * 10**(-11)
+
+# Решаем систему диф. уравнений
 
 sol = odeint(move_func, s0, t)
 
 def solve_func(i, key):
     sol = odeint(move_func, s0, t)
     if key == 'point':
-        x_earth = sol[i, 0]
-        y_earth = sol[i, 2]
-        x_jupiter = sol[i, 4]
-        y_jupiter = sol[i, 6]
-        x_pluto = sol[i, 8]
-        y_pluto = sol[i, 10]
-        x_sat = sol[i, 12]
-        y_sat = sol[i, 14]
+        x1 = sol[i, 0]
+        y1 = sol[i, 2]
+        x2 = sol[i, 4]
+        y2 = sol[i, 6]
+        x3 = sol[i, 8]
+        y3 = sol[i, 10]
+        x4 = sol[i, 12]
+        y4 = sol[i, 14]
+        x5 = sol[i, 16]
+        y5 = sol[i, 18]
     else:
-        x_earth = sol[:i, 0]
-        y_earth = sol[:i, 2]
-        x_jupiter = sol[:i, 4]
-        y_jupiter = sol[:i, 6]
-        x_pluto = sol[:i, 8]
-        y_pluto = sol[:i, 10]
-        x_sat = sol[:i, 12]
-        y_sat = sol[:i, 14]
-    return ((x_earth, y_earth), (x_jupiter, y_jupiter), (x_pluto, y_pluto),  (x_sat, y_sat))
+        x1 = sol[:i, 0]
+        y1 = sol[:i, 2]
+        x2 = sol[:i, 4]
+        y2 = sol[:i, 6]
+        x3 = sol[:i, 8]
+        y3 = sol[:i, 10]
+        x4 = sol[:i, 12]
+        y4 = sol[:i, 14]
+        x5 = sol[:i, 16]
+        y5 = sol[:i, 18]
+    return ((x1, y1), (x2, y2), (x3, y3), (x4, y4), (x5, y5))
 
+# Строим решение в виде графика и анимируем
 fig, ax = plt.subplots()
 
-sun, = plt.plot([], [], 'o', color='y', ms=25)
+ball1, = plt.plot([], [], 'o', color='y')
+# ball_line1, = plt.plot([], [], '-', color='y')
 
-earth, = plt.plot([], [], 'o', color='green')
+ball2, = plt.plot([], [], 'o', color='green')
+# ball_line2, = plt.plot([], [], '-', color='orange')
 
-jupiter, = plt.plot([], [], 'o', color='orange')
+ball3, = plt.plot([], [], 'o', color='orange')
+# ball_line3, = plt.plot([], [], '-', color='r')
+ball4, = plt.plot([], [], 'o', color='blue')
 
-pluto, = plt.plot([], [], 'o', color='blue')
+ball5, = plt.plot([], [], 'o', color='r')
 
-sat, = plt.plot([], [], 'o', color='r')
 
 def animate(i):
-    sun.set_data(solve_func(i, 'point')[0])
+    ball1.set_data(solve_func(i, 'point')[0])
+    # ball_line1.set_data(solve_func(i, 'line')[0])
 
-    earth.set_data(solve_func(i, 'point')[1])
+    ball2.set_data(solve_func(i, 'point')[1])
+    # ball_line2.set_data(solve_func(i, 'line')[1])
 
-    jupiter.set_data(solve_func(i, 'point')[2])
+    ball3.set_data(solve_func(i, 'point')[2])
+    # ball_line3.set_data(solve_func(i, 'line')[2])
+    ball4.set_data(solve_func(i, 'point')[3])
 
-    pluto.set_data(solve_func(i, 'point')[3])
+    ball5.set_data(solve_func(i, 'point')[4])
 
-    sat.set_data(solve_func(i, 'point')[4])
-    
 ani = FuncAnimation(fig,
                     animate,
                     frames=frames,
                     interval=30)
 
 plt.axis('equal')
-edge = 20*ae
+edge = 25*ae
 ax.set_xlim(-edge, edge)
 ax.set_ylim(-edge, edge)
 
+# ani.save('task1.gif')
 plt.show()
