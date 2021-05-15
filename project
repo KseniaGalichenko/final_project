@@ -3,14 +3,10 @@ from scipy.integrate import odeint
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-# Определяем переменную величину
-
 frames = 365
 seconds_in_year = 365 * 24 * 60 * 60
 years = 20
 t = np.linspace(0, years*seconds_in_year, frames)
-
-# Определяем функцию для системы диф. уравнений
 
 def move_func(s, t):
   (x_earth, v_x_earth, y_earth, v_y_earth,
@@ -18,25 +14,23 @@ def move_func(s, t):
    x_pluto, v_x_pluto, y_pluto, v_y_pluto,
    x_sat, v_x_sat, y_sat, v_y_sat) = s
 
-# Диманика первого тела под влиянием второго и третьего
-
   dxdt_earth = v_x_earth
   dv_xdt_earth = (- G * m_sun * (x_earth - x_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
 
   dydt_earth = v_y_earth
-  dv_ydt_earth = (- G * m_sun * (y_earth - y_sun) / ((x_earth - x_sun)**2 + (y_earth - y_sun)**2)**1.5)
+  dv_ydt_earth = (- G * m_sun * (y_earth - y_sun) / ((y_earth - y_sun)**2 + (x_earth - x_sun)**2)**1.5)
 
   dxdt_jupiter = v_x_jupiter
   dv_xdt_jupiter = (- G * m_sun * (x_jupiter - x_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
 
   dydt_jupiter = v_y_jupiter
-  dv_ydt_jupiter = (- G * m_sun * (y_jupiter - y_sun) / ((x_jupiter - x_sun)**2 + (y_jupiter - y_sun)**2)**1.5)
+  dv_ydt_jupiter = (- G * m_sun * (y_jupiter - y_sun) / ((y_jupiter - y_sun)**2 + (x_jupiter - x_sun)**2)**1.5)
 
   dxdt_pluto = v_x_pluto
   dv_xdt_pluto = (- G * m_sun * (x_pluto - x_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)
 
   dydt_pluto = v_y_pluto
-  dv_ydt_pluto = (- G * m_sun * (y_pluto - y_sun) / ((x_pluto - x_sun)**2 + (y_pluto - y_sun)**2)**1.5)
+  dv_ydt_pluto = (- G * m_sun * (y_pluto - y_sun) / ((y_pluto - y_sun)**2 + (x_pluto - x_sun)**2)**1.5)
 
   dxdt_sat = v_x_sat
   dv_xdt_sat = (- G * m_sun * (x_sat - x_sun) / ((x_sat - x_sun)**2 + (y_sat - y_sun)**2)**1.5
@@ -49,12 +43,12 @@ def move_func(s, t):
             - G * m_earth * (y_sat - y_earth) / ((y_sat - y_earth)**2 + (x_sat - x_earth)**2)**1.5 
             - G * m_jupiter * (y_sat - y_jupiter) / ((y_sat - y_jupiter)**2 + (x_sat - x_jupiter)**2)**1.5
             - G * m_pluto * (y_sat - y_pluto) / ((y_sat - y_pluto)**2 + (x_sat - x_pluto)**2)**1.5)
-
+            
   return (dxdt_earth, dv_xdt_earth, dydt_earth, dv_ydt_earth,
           dxdt_jupiter, dv_xdt_jupiter, dydt_jupiter, dv_ydt_jupiter,
           dxdt_pluto, dv_xdt_pluto, dydt_pluto, dv_ydt_pluto,
           dxdt_sat, dv_xdt_sat, dydt_sat, dv_ydt_sat)
-# Определяем начальные значения и параметры, входящие в систему диф. уравнений
+
 
 ae = 149 * 10**9
 
@@ -101,8 +95,6 @@ m_sat = 10**(-15) * m_sun
 
 G = 6.67 * 10**(-11)
 
-# Решаем систему диф. уравнений
-
 sol = odeint(move_func, s0, t)
 
 def solve_func(i, key):
@@ -127,7 +119,6 @@ def solve_func(i, key):
         y_sat = sol[:i, 14]
     return ((x_earth, y_earth), (x_jupiter, y_jupiter), (x_pluto, y_pluto),  (x_sat, y_sat))
 
-# Строим решение в виде графика и анимируем
 fig, ax = plt.subplots()
 
 sun, = plt.plot([], [], 'o', color='y', ms=25)
@@ -151,7 +142,6 @@ def animate(i):
 
     sat.set_data(solve_func(i, 'point')[4])
     
-
 ani = FuncAnimation(fig,
                     animate,
                     frames=frames,
